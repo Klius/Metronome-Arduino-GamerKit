@@ -13,7 +13,19 @@ byte display[1][8] = {
           B00000000 
         }
     };
-    
+//The bar for separating time_signature
+byte bar[1][8] = {
+        {
+          B00000000,
+          B00000000,
+          B00001000,
+          B00001000,
+          B00011000,
+          B00010000,
+          B00010000,
+          B00000000 
+        }
+    };
     
 // Animation for the metronome blips
 #define NUMFRAMESIMAGES 4
