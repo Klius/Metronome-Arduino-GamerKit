@@ -12,6 +12,9 @@ Gamer gamer;
 */
 int MODE = 0;
 
+//Animation
+  int displayCount = 0;
+  bool reverseMode = false;
 //metronome
 int noteDuration = 15;
 int bpm = 120;
@@ -19,7 +22,6 @@ int del = (60/(float)bpm)*1000-noteDuration; // get the delay between beeps
 float lastMills = 0-del;
 int barCount = 0;
 int beats = 4;
-int bars = 4;
 int metronomeStart = false;
 int maxBPM = 255;
 int displayDelay = 100;
@@ -44,13 +46,40 @@ void loop() {
   }
 
 }
+void animateMetronome(){
+
+    if(barCount >= NUMFRAMESIMAGES){
+      gamer.printImage(spaceship[displayCount]);
+      
+      
+      if (reverseMode){
+        displayCount -= 1;
+      }
+      else{
+        displayCount += 1;
+      }
+      
+      if(displayCount == SPACESHIPFRAMESIMAGES){
+        reverseMode = true;
+        displayCount -= 2;
+      }else if(displayCount<=0){
+        reverseMode = false;
+      }
+      
+    }
+    else{
+      Serial.print("barcount:");
+      Serial.println(barCount);
+      gamer.printImage(images[barCount]);
+    }
+}
 void showNumbers(){
   if(MODE == 0){
     getNumberDisplay(bpm);
     gamer.printImage(display[0]);
   }
   else if(MODE == 1){
-    getNumberDisplay(beats*10+bars);
+    getNumberDisplay(beats);
     gamer.printImage(display[0]);
   }
   delay(50);
@@ -68,7 +97,7 @@ void getNumberDisplay(int number){
         display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] ;
       }
       else{
-        display[0][i]= right_numbers[digits[1]][i] | bar[0][i] | left_numbers[digits[0]][i] ;
+        display[0][i]= right_numbers[digits[1]][i] | middle_numbers[digits[0]][i] | bar[0][i] ;
       }
     }
     
@@ -78,19 +107,18 @@ void readInputs(){
     if(MODE == 0){
       tempoInputs();
     }
-    if(MODE == 1){
+    else if(MODE == 1){
       timeInputs();
     }
+    else{
+      MODE = 0;
+    }
     if(gamer.isPressed(LEFT)){
-    if (MODE-1 >= 0){
       MODE -= 1;
     }
-  }
-  if(gamer.isPressed(RIGHT)){
-    if (MODE+1 <2){
+    if(gamer.isPressed(RIGHT)){
       MODE += 1;
     }
-  }
   }
   if(gamer.isPressed(START)){
     if (metronomeStart){
@@ -103,6 +131,14 @@ void readInputs(){
   }
 }
 void timeInputs(){
+  if(beats > 64 || beats <= 0){beats = 1;}
+  if(gamer.isPressed(UP)){
+    beats += 1;
+  }
+  else if(gamer.isPressed(DOWN))
+  {
+    beats -= 1;
+  }
 }
 void tempoInputs(){
 if(gamer.isHeld(UP)) { 
@@ -143,7 +179,7 @@ void doMetronome(){
       delay(noteDuration);
       gamer.stopTone();
     }
-    gamer.printImage(images[barCount]);
+    animateMetronome();
     barCount++;
     lastMills = mills;
   }
