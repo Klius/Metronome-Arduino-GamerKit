@@ -73,6 +73,15 @@ byte images[NUMFRAMESIMAGES][8] = {
     B00000000,
     B00000000  }
 };
+byte cls[1][8] = {{
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000 }};
 #define SPACESHIPFRAMESIMAGES 5
 byte spaceship[SPACESHIPFRAMESIMAGES][8] = {
   {

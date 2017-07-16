@@ -3,7 +3,13 @@
 
 // Make a copy of the library
 Gamer gamer;
-
+/*
+ * TODO
+ *------------------- 
+ *  1-Simplify the code
+ *  2-make it more understandable
+ *  3-optimize it
+ */
 //Modes
 /*
 * 0 = Tempo
@@ -16,9 +22,9 @@ int MODE = 0;
   int displayCount = 0;
   bool reverseMode = false;
 //metronome
-int noteDuration = 15;
+int noteDuration = 96;
 int bpm = 120;
-int del = (60/(float)bpm)*1000-noteDuration; // get the delay between beeps
+int del = (60.000/bpm)*1000; // get the delay between beeps
 float lastMills = 0-del;
 int barCount = 0;
 int beats = 4;
@@ -44,10 +50,10 @@ void loop() {
          showNumbers();
      }
   }
-
 }
-void animateMetronome(){
 
+void animateMetronome(){
+    //Si excede la longitud deja de pintar cuadros
     if(barCount >= NUMFRAMESIMAGES){
       gamer.printImage(spaceship[displayCount]);
       
@@ -68,11 +74,12 @@ void animateMetronome(){
       
     }
     else{
-      Serial.print("barcount:");
-      Serial.println(barCount);
+      //Serial.print("barcount:");
+      //Serial.println(barCount);
       gamer.printImage(images[barCount]);
     }
 }
+
 void showNumbers(){
   if(MODE == 0){
     getNumberDisplay(bpm);
@@ -84,11 +91,12 @@ void showNumbers(){
   }
   delay(50);
 }
+
 void getNumberDisplay(int number){
     int digits[3] = {0,0,0};
     for(int j = 0; j<3; j++ )
     {
-      Serial.println(number % 10);
+      //Serial.println(number % 10);
       digits[j] = number % 10;
       number /= 10;
     }
@@ -102,6 +110,7 @@ void getNumberDisplay(int number){
     }
     
 }
+
 void readInputs(){
   if(!metronomeStart){
     if(MODE == 0){
@@ -130,6 +139,7 @@ void readInputs(){
     }
   }
 }
+
 void timeInputs(){
   if(beats > 64 || beats <= 0){beats = 1;}
   if(gamer.isPressed(UP)){
@@ -140,6 +150,7 @@ void timeInputs(){
     beats -= 1;
   }
 }
+
 void tempoInputs(){
 if(gamer.isHeld(UP)) { 
       if(bpm +1 < maxBPM){
@@ -158,26 +169,31 @@ if(gamer.isHeld(UP)) {
       gamer.stopTone();
     }
 }
+
 void resetMetronome(){
-  del = (60/(float)bpm)*1000-noteDuration; // get the delay between beeps
   lastMills = 0-del;
   barCount = 0;
   gamer.clear();
+  gamer.stopTone();
 }
+
 void doMetronome(){
   long mills = millis();
+  if(mills > lastMills+noteDuration){
+    gamer.stopTone();
+    if(beats==1){
+      gamer.printImage(cls[0]);
+    }
+    
+  }
   if (mills > lastMills+del) {
-    if (barCount == beats) { // 4 beeps in a bar
+    if (barCount == beats) { // 4 beeps(or more) in a bar
       barCount = 0;
     }      
     if (barCount == 0) {
-       gamer.playTone(0);
-       delay(noteDuration);
-       gamer.stopTone();
+       gamer.playTone(255);
     } else {
-      gamer.playTone(128);
-      delay(noteDuration);
-      gamer.stopTone();
+       gamer.playTone(128);
     }
     animateMetronome();
     barCount++;
