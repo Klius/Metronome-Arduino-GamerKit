@@ -13,6 +13,16 @@ byte display[1][8] = {
           B00000000 
         }
     };
+//Clear the display
+byte cls[1][8] = {{
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000,
+                        B00000000 }};
 //The bar for separating time_signature
 byte bar[1][8] = {
         {
@@ -73,15 +83,6 @@ byte images[NUMFRAMESIMAGES][8] = {
     B00000000,
     B00000000  }
 };
-byte cls[1][8] = {{
-                        B00000000,
-                        B00000000,
-                        B00000000,
-                        B00000000,
-                        B00000000,
-                        B00000000,
-                        B00000000,
-                        B00000000 }};
 #define SPACESHIPFRAMESIMAGES 5
 byte spaceship[SPACESHIPFRAMESIMAGES][8] = {
   {

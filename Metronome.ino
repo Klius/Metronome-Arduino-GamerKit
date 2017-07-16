@@ -23,13 +23,13 @@ int MODE = 0;
   bool reverseMode = false;
 //metronome
 int noteDuration = 96;
-int bpm = 120;
-int del = (60.000/bpm)*1000; // get the delay between beeps
-float lastMills = 0-del;
+byte bpm = 120;
+int tempoDelay = (60.000/bpm)*1000; // get the delay between beeps
+float lastMills = 0-tempoDelay;
 int barCount = 0;
-int beats = 4;
-int metronomeStart = false;
-int maxBPM = 255;
+byte beats = 4;
+bool metronomeStart = false;
+byte maxBPM = 255;
 int displayDelay = 100;
 float displayMills = 0-displayDelay;
 
@@ -45,7 +45,6 @@ void loop() {
   if(metronomeStart){
     doMetronome();
   }else{  
-   // gamer.clear();
      if (millis() > displayMills+displayDelay){
          showNumbers();
      }
@@ -171,7 +170,8 @@ if(gamer.isHeld(UP)) {
 }
 
 void resetMetronome(){
-  lastMills = 0-del;
+  tempoDelay = (60.000/bpm)*1000; //recalcular el delay porque el bpm puede canviar
+  lastMills = 0-tempoDelay;
   barCount = 0;
   gamer.clear();
   gamer.stopTone();
@@ -186,7 +186,7 @@ void doMetronome(){
     }
     
   }
-  if (mills > lastMills+del) {
+  if (mills > lastMills+tempoDelay) {
     if (barCount == beats) { // 4 beeps(or more) in a bar
       barCount = 0;
     }      
