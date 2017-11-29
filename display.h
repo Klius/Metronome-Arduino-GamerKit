@@ -36,7 +36,19 @@ byte bar[1][8] = {
           B00000000 
         }
     };
-    
+//PRESET logo
+byte preset_logo[1][8] = {
+        {
+          B11011011,
+          B00000000,
+          B00000000,
+          B00000000,
+          B00000000,
+          B00000000,
+          B00000000,
+          B00000000 
+        }
+    };
 // Animation for the metronome blips
 #define NUMFRAMESIMAGES 4
 byte images[NUMFRAMESIMAGES][8] = {

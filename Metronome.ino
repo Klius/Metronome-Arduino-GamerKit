@@ -15,8 +15,9 @@ Gamer gamer;
 * 0 = Tempo
 * 1 = Time Signature
 * 2 = tap_tempo
+* 3 = stored_music
 */
-int MODE = 0;
+byte MODE = 0;
 
 //Animation
   int displayCount = 0;
@@ -32,7 +33,8 @@ bool metronomeStart = false;
 byte maxBPM = 255;
 int displayDelay = 100;
 float displayMills = 0-displayDelay;
-
+int currentPreset = 0;
+byte presets[] = {126,98,88,120,124,120,94,140,94,150,88,136,96};
 
 void setup() {
   // Start Gamer!
@@ -88,6 +90,10 @@ void showNumbers(){
     getNumberDisplay(beats);
     gamer.printImage(display[0]);
   }
+  else{ //presets
+    getNumberDisplay(presets[currentPreset]);
+    gamer.printImage(display[0]);
+  }
   delay(50);
 }
 
@@ -100,11 +106,14 @@ void getNumberDisplay(int number){
       number /= 10;
     }
     for(int i = 0; i<8;i++){
-      if(MODE == 0){
-        display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] ;
+      if(MODE == 1){
+        display[0][i]= right_numbers[digits[1]][i] | middle_numbers[digits[0]][i] | bar[0][i] ;
+      }
+      else if (MODE == 2){
+        display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] | preset_logo[0][i];
       }
       else{
-        display[0][i]= right_numbers[digits[1]][i] | middle_numbers[digits[0]][i] | bar[0][i] ;
+        display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] ;
       }
     }
     
@@ -117,6 +126,11 @@ void readInputs(){
     }
     else if(MODE == 1){
       timeInputs();
+    }
+    else if(MODE == 2){
+      presetInputs();//TODO IMPLEMENT
+      bpm = presets[currentPreset];
+      resetMetronome();
     }
     else{
       MODE = 0;
@@ -150,6 +164,27 @@ void timeInputs(){
   }
 }
 
+void presetInputs(){
+  if(currentPreset > 12 ){currentPreset = 12;}
+  else if(currentPreset < 0){currentPreset =0; }
+  if(gamer.isPressed(UP)){
+    currentPreset += 1;
+    bpm = presets[currentPreset];
+    resetMetronome();
+    gamer.playTone(0);
+    gamer.stopTone();
+  }
+  else if(gamer.isPressed(DOWN))
+  {
+    currentPreset -= 1;
+    bpm = presets[currentPreset];
+    resetMetronome();
+    gamer.playTone(0);
+    gamer.stopTone();
+  }
+  
+}
+
 void tempoInputs(){
 if(gamer.isHeld(UP)) { 
       if(bpm +1 < maxBPM){
@@ -174,13 +209,13 @@ void resetMetronome(){
   lastMills = 0-tempoDelay;
   barCount = 0;
   gamer.clear();
-  gamer.stopTone();
+  //gamer.stopTone();
 }
 
 void doMetronome(){
   long mills = millis();
   if(mills > lastMills+noteDuration){
-    gamer.stopTone();
+    //gamer.stopTone();
     if(beats==1){
       gamer.printImage(cls[0]);
     }
@@ -191,9 +226,9 @@ void doMetronome(){
       barCount = 0;
     }      
     if (barCount == 0) {
-       gamer.playTone(255);
+       //gamer.playTone(255);
     } else {
-       gamer.playTone(128);
+       //gamer.playTone(128);
     }
     animateMetronome();
     barCount++;
