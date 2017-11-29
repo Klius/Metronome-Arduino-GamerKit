@@ -6,9 +6,11 @@ Gamer gamer;
 /*
  * TODO
  *------------------- 
- *  1-Simplify the code
- *  2-make it more understandable
- *  3-optimize it
+ * 1- lower down numbers
+ * 2- change left button to assign
+ * 3- maybe do some prompts
+ * 4- store presets instead of hardcoding them
+ * 
  */
 //Modes
 /*
