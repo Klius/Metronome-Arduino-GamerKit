@@ -6,10 +6,9 @@ Gamer gamer;
 /*
  * TODO
  *------------------- 
- * 1- lower down numbers
- * 2- change left button to assign
- * 3- maybe do some prompts
- * 4- store presets instead of hardcoding them
+ * 1- change left button to assign
+ * 2- maybe do some prompts
+ * 3- store presets instead of hardcoding them
  * 
  */
 //Modes
@@ -20,7 +19,7 @@ Gamer gamer;
 * 3 = stored_music
 */
 byte MODE = 0;
-
+byte OLDMODE = 0;
 //Animation
   int displayCount = 0;
   bool reverseMode = false;
@@ -112,10 +111,10 @@ void getNumberDisplay(int number){
         display[0][i]= right_numbers[digits[1]][i] | middle_numbers[digits[0]][i] | bar[0][i] ;
       }
       else if (MODE == 2){
-        display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] | preset_logo[0][i];
+        display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] | preset_title[0][i];
       }
       else{
-        display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] ;
+        display[0][i]=right_numbers[digits[2]][i] | middle_numbers[digits[1]][i]  | left_numbers[digits[0]][i] | time_title[0][i] ;
       }
     }
     
@@ -131,16 +130,17 @@ void readInputs(){
     }
     else if(MODE == 2){
       presetInputs();//TODO IMPLEMENT
-      bpm = presets[currentPreset];
-      resetMetronome();
     }
     else{
       MODE = 0;
+      OLDMODE = MODE;
     }
     if(gamer.isPressed(LEFT)){
+      OLDMODE = MODE;
       MODE -= 1;
     }
     if(gamer.isPressed(RIGHT)){
+      OLDMODE = MODE;
       MODE += 1;
     }
   }
@@ -167,6 +167,11 @@ void timeInputs(){
 }
 
 void presetInputs(){
+  if(OLDMODE != 2 ){
+    OLDMODE = 2;
+    bpm = presets[currentPreset];
+    resetMetronome();
+  }
   if(currentPreset > 12 ){currentPreset = 12;}
   else if(currentPreset < 0){currentPreset =0; }
   if(gamer.isPressed(UP)){
